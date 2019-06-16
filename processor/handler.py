@@ -4,11 +4,11 @@ from datetime import datetime
 class Medicine(TransactionHandler):
 
     def __init__(self , namespace_prefix):
-        self._namespace_prefix = _namespace_prefix
+        self._namespace_prefix = namespace_prefix
 
     @property
     def family_name(self):
-        return('Medicine Transactor')
+        return('med')
 
     @property
     def family_versions(self):
