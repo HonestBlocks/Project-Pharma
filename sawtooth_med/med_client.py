@@ -16,7 +16,7 @@ from sawtooth_signing.secp256k1 import Secp256k1PrivateKey
 from sawtooth_sdk.protobuf.transaction_pb2 import TransactionHeader
 from sawtooth_sdk.protobuf.transaction_pb2 import Transaction
 
-from sawtooth_PharmaChain.med_exceptions import MedException
+from sawtooth_med.med_exceptions import MedException
 
 MED_NAMESPACE = hashlib.sha512('med'.encode("utf-8")).hexdigest()[0:6]
 

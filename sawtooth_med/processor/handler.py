@@ -1,10 +1,10 @@
 import logging
 import datetime
 
-from sawtooth_PharmaChain.processor.med_payload import MedPayload
-from sawtooth_PharmaChain.processor.med_state import Medicine
-from sawtooth_PharmaChain.processor.med_state import MedState
-from sawtooth_PharmaChain.med_state import MED_NAMESPACE
+from sawtooth_med.processor.med_payload import MedPayload
+from sawtooth_med.processor.med_state import Medicine
+from sawtooth_med.processor.med_state import MedState
+from sawtooth_med.med_state import MED_NAMESPACE
 
 from sawtooth_sdk.processor.handler import TransactionHandler
 from sawtooth_sdk.processor.exceptions import InternalError
