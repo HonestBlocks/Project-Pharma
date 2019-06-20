@@ -9,11 +9,11 @@ import sys
 import pkg_resources
 import datetime
 
-from sawtooth_PharmaChain.sawtooth_client import MedClient
-from sawtooth_PharmaChain.med_exceptions import MedException
+from sawtooth_med.med_client import MedClient
+from sawtooth_med.med_exceptions import MedException
 
 
-DISTRIBUTION_NAME = 'sawtooth_PharmaChain'
+DISTRIBUTION_NAME = 'sawtooth_med'
 
 DEFAULT_URL = 'http://127.0.0.1:8008'
 
