@@ -1,10 +1,19 @@
-from sawtooth_PharmaChain.processor.Med_Payload import MedPayload
-from datetime import datetime
+import logging
+import datetime
+
+from sawtooth_PharmaChain.processor.med_payload import MedPayload
+from sawtooth_PharmaChain.processor.med_state import Medicine
+from sawtooth_PharmaChain.processor.med_state import MedState
+from sawtooth_PharmaChain.med_state import MED_NAMESPACE
+
+from sawtooth_sdk.processor.handler import TransactionHandler
+from sawtooth_sdk.processor.exceptions import InternalError
+from sawtooth_sdk.processor.exceptions import InvalidTransaction
+
+
+LOGGER = logging.getLogger(__name__)
 
 class Medicine(TransactionHandler):
-
-    def __init__(self , namespace_prefix):
-        self._namespace_prefix = namespace_prefix
 
     @property
     def family_name(self):
@@ -16,9 +25,10 @@ class Medicine(TransactionHandler):
 
     @property
     def namespaces(self):
-        return([self._namespace_prefix])
+        return([MED_NAMESPACE])
 
     def apply(self, transaction , context):
+
         header = transaction.header
         signer = header.signer_public_key
 
@@ -27,76 +37,73 @@ class Medicine(TransactionHandler):
         med_state = MedState(context)
 
         if med_payload.action == 'createMedicine':
-            if med_state.get_state(med_payload.name) is not None:
-                raise InvalidTransaction('Invalid action: Medicine already exists: {}'.format(med_payload.name))
-        print("-"*49)
-        print((" "*17)+"CREATE MEDICINE"+" "*17)
-        print("-"*49)
-        medicineAllContents = []
-        medicineID = input('Enter Medicine ID              :')
-        medicineKeyContent = input('Enter Key Content              :')
-        medicineAllContentsCount = int(input('Enter All Contents Count       :'))
-        for x in range(0,medicineAllContentsCount):
-            content = input('Enter Name-Percent')
-            medicineAllContents.append(content)
-        manufactureDate = datetime.date(datetime.now())
-        expirymonths = input('Enter months of expiry from now:')
-        expiryDate = (datetime.date.today() + datetime.timedelta(6*365/12))
-        manufacturerID = signer
-        owner = input('Enter Entity Name             :')
+            if med_state.get_state(med_payload.medicineName) is not None:
+                raise InvalidTransaction('Invalid action: Medicine already exists: {}'.format(med_payload.medicineName))
+
         medicine = Medicine(
-                            medicineName = med_payload.name,
-                            medicineID = medicineID,
-                            medicineKeyContent = medicineKeyContent,
-                            medicineAllContents = medicineAllContents,
-                            manufactureDate = manufactureDate,
-                            expiryDate = expiryDate,
-                            manufacturerID = manufacturerID,
-                            owner = owner
-                                )
-        med_state.set_medicine(med_payload.name , medicine)
+                            medicineName = med_payload.medicineName,
+                            medicineID = med_payload.medicineID,
+                            medicineKeyContent = med_payload.medicineKeyContent,
+                            medicineAllContents = med_payload.medicineAllContents,
+                            manufactureDate = med_payload.manufactureDate,
+                            expiryDate = med_payload.expiryDate,
+                            manufacturerID = med_payload.manufacturerID,
+                            newOwner = med_payload.newOwner
+                        )
+
+        med_state.set_medicine(med_payload.medicineName , medicine)
         _display('Manufacturer: {} created medicine'.format(signer[:6]))
 
 
 
 
         elif med_payload.action == 'updateMedicine':
-            med = med_state.get_medicine(med_payload.name)
-            if med:
-                if(signer == med.manufacturerID):
-                    print("-"*49)
-                    print((" "*17)+"UPDATE MEDICINE"+" "*17)
-                    print("-"*49)
-                    contentcount = input('Enter number of Contents in medicine:')
-                    for x in range(0,contentcount):
-                        content = input('Enter Name-Percent')
-                        med.medicineAllContents.append(content)
-                    med_state.set_medicine(med_payload.name , medicine)
+            medicine = med_state.get_medicine(med_payload.medicineName)
+            if medicine:
+                if(signer == medicine.manufacturerID):
+                    medicine = Medicine(
+                                        medicineName = med_payload.medicineName,
+                                        medicineID = med_payload.medicineID,
+                                        medicineKeyContent = med_payload.medicineKeyContent,
+                                        medicineAllContents = med_payload.medicineAllContents,
+                                        manufactureDate = med_payload.manufactureDate,
+                                        expiryDate = med_payload.expiryDate,
+                                        manufacturerID = med_payload.manufacturerID,
+                                        newOwner = med_payload.newOwner
+                                    )
+                    med_state.set_medicine(med_payload.medicineName , medicine)
                     _display('Manufacturer: {} updated medicine successfully'.format(signer[:6]))
                 else:
-                    raise InvalidTransaction('Invalid action: UnAUTHORISED ACTION')
+                    raise InvalidTransaction('Invalid action: UNAUTHORISED ACTION')
             else:
-                raise InvalidTransaction('Invalid action: Medicine DOES NOT exists: {}'.format(med_payload.name))
+                raise InvalidTransaction('Invalid action: Medicine DOES NOT exists: {}'.format(med_payload.medicineName))
 
 
         elif med_payload.action == 'updateMedicineOwner':
-            med = med_state.get_medicine(med_payload.name)
-            if med:
-                if(med_payload.newOwner != med.owner):
-                    med.owner = med_payload.newOwner
-                    med_state.set_medicine(med_payload.name , medicine)
+            medicine = med_state.get_medicine(med_payload.medicineName)
+            if medicine:
+                if(med_payload.newOwner is not medicine.newOwner):
+                    medicine.newOwner = med_payload.newOwner
+                    med_state.set_medicine(med_payload.medicineName , medicine)
                     _display('Owner Updated by : {}'.format(signer[:6]))
+                else:
+                    raise InvalidTransaction('Invalid action UNAUTHORISED ACTION')
+            else:
+                raise InvalidTransaction('Invalid action: Medicine DOES NOT exists: {}'.format(med_payload.medicineName))
 
 
 
         elif med_payload.action == 'deleteMedicine':
-            medicine = med_state.get_state(med_payload.name)
+            medicine = med_state.get_state(med_payload.medicineName)
 
             if medicine is None:
-                raise InvalidTransaction('Invald action: medicine does not exist')
+                raise InvalidTransaction('Invalid action: Medicine DOES NOT exists: {}'.format(med_payload.medicineName))
 
-            med_state.delete_medicine(med_payload.name)
-            _display('Medecine Info deleted successfully by: {}'.format(signer[:6]))
+            if(signer == medicine.manufacturerID):
+                med_state.delete_medicine(med_payload.name)
+                _display('Medecine Info deleted successfully by: {}'.format(signer[:6]))
+            else:
+                raise InvalidTransaction('Invalid action UNAUTHORISED ACTION')
 
         else:
             raise InvalidTransaction('Unhandled action: {}'.format(med_payload.action))
