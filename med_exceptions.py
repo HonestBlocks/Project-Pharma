@@ -1,0 +1,2 @@
+class MedException(Exception):
+    pass
