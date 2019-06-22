@@ -23,11 +23,13 @@ COPY . home/harsh/project
 
 RUN pwd
 
-COPY home/harsh/project/bin/protogen home/harsh/project/bin/protogen
+WORKDIR /project/bin
 
-RUN chmod +x home/harsh/project/bin/protogen
+RUN pwd
 
-RUN /home/harsh/project/bin/protogen \
+SHELL ["/bin/bash", "-c", "ls"] 
+
+RUN /protogen \
  && cd /project/ \
  && if [ -d "debian" ]; then rm -rf debian; fi \
  && python3 setup.py clean --all \
@@ -56,6 +58,8 @@ RUN echo "deb http://repo.sawtooth.me/ubuntu/ci xenial universe" >> /etc/apt/sou
     python3-stdeb
 
 COPY --from=sawtooth-sdk-python-builder /python3-sawtooth-sdk*.deb /tmp
+
+RUN pwd
 
 COPY . /project
 
