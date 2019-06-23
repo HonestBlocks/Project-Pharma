@@ -3,6 +3,7 @@
 import os
 import sys
 import sysconfig
+import sawtooth_sdk
 
 build_str = "lib.{}-{}.{}".format(
     sysconfig.get_platform(),
