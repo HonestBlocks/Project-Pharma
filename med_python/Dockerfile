@@ -19,18 +19,10 @@ RUN echo "deb http://repo.sawtooth.me/ubuntu/ci xenial universe" >> /etc/apt/sou
     python3-toml \
     python3-yaml
 
-COPY . home/harsh/project
+COPY . /project
 
-RUN pwd
-
-WORKDIR /project/bin
-
-RUN pwd
-
-SHELL ["/bin/bash", "-c", "ls"] 
-
-RUN /protogen \
- && cd /project/ \
+RUN project/bin/protogen \
+ && cd project/ \
  && if [ -d "debian" ]; then rm -rf debian; fi \
  && python3 setup.py clean --all \
  && python3 setup.py --command-packages=stdeb.command debianize \
@@ -38,7 +30,7 @@ RUN /protogen \
  && dpkg-buildpackage -b -rfakeroot -us -uc
 
 # -------------=== python med tp build ===-------------
-
+	
 FROM ubuntu:xenial as python-med-tp-builder
 
 ENV VERSION=AUTO_STRICT
@@ -56,6 +48,7 @@ RUN echo "deb http://repo.sawtooth.me/ubuntu/ci xenial universe" >> /etc/apt/sou
     python3-grpcio \
     python3-protobuf \
     python3-stdeb
+
 
 COPY --from=sawtooth-sdk-python-builder /python3-sawtooth-sdk*.deb /tmp
 
