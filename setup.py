@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import sawtooth_sdk
 import os
 import subprocess
 

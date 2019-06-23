@@ -2,6 +2,7 @@ import collections
 import logging
 import os
 import toml
+import sawtooth_sdk
 
 from sawtooth_sdk.processor.exceptions import LocalConfigurationError
 
