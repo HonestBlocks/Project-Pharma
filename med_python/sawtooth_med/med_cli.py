@@ -73,7 +73,7 @@ def setup_loggers(verbose_level):
 
 
 def add_createMedicine_parser(subparsers , parent_parser):
-    parser = subparse.add_parser(
+    parser = subparsers.add_parser(
         'createMedicine',
         help = 'Creates New Medicine Asset',
         description = 'Sends a transaction to create a medicine asset, it fails if name already taken.',
@@ -157,7 +157,7 @@ def add_createMedicine_parser(subparsers , parent_parser):
 
 
 def add_updateMedicine_parser(subparsers , parent_parser):
-    parser = subparse.add_parser(
+    parser = subparsers.add_parser(
         'updateMedicine',
         help = 'Update Medicine information',
         parents = [parent_parser]
@@ -233,7 +233,7 @@ def add_updateMedicine_parser(subparsers , parent_parser):
 
 
 def add_updateMedicineOwner_parser(subparsers , parent_parser):
-    parser = subparse.add_parser(
+    parser = subparsers.add_parser(
         'updateMedicineOwner',
         help = 'Update Medicine current Owner',
         parents = [parent_parser]
@@ -286,7 +286,7 @@ def add_updateMedicineOwner_parser(subparsers , parent_parser):
 
 
 def add_deleteMedicine_parser(subparsers , parent_parser):
-    parser = subparse.add_parser(
+    parser = subparsers.add_parser(
         'deleteMedicine',
         help = 'Delete a medicine asset',
         parents = [parent_parser]
@@ -338,7 +338,7 @@ def add_deleteMedicine_parser(subparsers , parent_parser):
 
 
 def add_show_parser(subparsers , parent_parser):
-    parser = subparse.add_parser(
+    parser = subparsers.add_parser(
         'show',
         help = 'Show a medicine asset',
         parents = [parent_parser]
@@ -382,7 +382,7 @@ def add_show_parser(subparsers , parent_parser):
 
 
 def add_list_parser(subparsers , parent_parser):
-    parser = subparse.add_parser(
+    parser = subparsers.add_parser(
         'list',
         help = 'List all the medicine assets',
         parents = [parent_parser]
@@ -625,7 +625,7 @@ def do_show(args):
     if data is not None:
         print("DATA fetched, code to retrieve")
     else:
-        raise MedException("Medicine not found: {}".format{medicineName})
+        raise MedException("Medicine not found: {}".format(medicineName))
 
 def do_list(args):
     url = _get_url(args)

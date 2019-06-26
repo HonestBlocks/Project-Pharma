@@ -14,13 +14,13 @@ services:
     stop_signal: SIGKILL
 
   med-tp-python:
-    image: harsh/med:v3
+    image: harsh/med:v2
     container_name: sawtooth-med-tp-python
     depends_on:
       - validator
     command: |
       bash -c "
-        med-tp-python -vv -C tcp://validator:4004
+        ./med-tp-python -vv -C tcp://validator:4004
       "
     stop_signal: SIGKILL
 
