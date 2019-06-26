@@ -26,13 +26,19 @@ RUN apt-get install -y -q \
     python3-yaml \
     python3-zmq
 
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+
+RUN python3 get-pip.py
+
+RUN python3 -m pip install sawtooth_sdk
+
 RUN mkdir -p /var/log/sawtooth
 
 ENV PATH=$PATH:/project/bin
 
-WORKDIR /project
+ADD . /project
 
-RUN pwd
+WORKDIR /project
 
 CMD echo "\033[0;32m--- Building med-tp-python ---\n\033[0m" \
  && source /bin/protogen \

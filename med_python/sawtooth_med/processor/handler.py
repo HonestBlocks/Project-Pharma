@@ -4,7 +4,7 @@ import datetime
 from sawtooth_med.processor.med_payload import MedPayload
 from sawtooth_med.processor.med_state import Medicine
 from sawtooth_med.processor.med_state import MedState
-from sawtooth_med.med_state import MED_NAMESPACE
+from sawtooth_med.processor.med_state import MED_NAMESPACE
 
 from sawtooth_sdk.processor.handler import TransactionHandler
 from sawtooth_sdk.processor.exceptions import InternalError
@@ -40,7 +40,7 @@ class Medicine(TransactionHandler):
             if med_state.get_state(med_payload.medicineName) is not None:
                 raise InvalidTransaction('Invalid action: Medicine already exists: {}'.format(med_payload.medicineName))
 
-        medicine = Medicine(
+            medicine = Medicine(
                             medicineName = med_payload.medicineName,
                             medicineID = med_payload.medicineID,
                             medicineKeyContent = med_payload.medicineKeyContent,
@@ -51,13 +51,13 @@ class Medicine(TransactionHandler):
                             newOwner = med_payload.newOwner
                         )
 
-        med_state.set_medicine(med_payload.medicineName , medicine)
-        _display('Manufacturer: {} created medicine'.format(signer[:6]))
+            med_state.set_medicine(med_payload.medicineName , medicine)
+            _display('Manufacturer: {} created medicine'.format(signer[:6]))
 
 
 
 
-        elif med_payload.action == 'updateMedicine':
+        elif(med_payload.action == 'updateMedicine'):
             medicine = med_state.get_medicine(med_payload.medicineName)
             if medicine:
                 if(signer == medicine.manufacturerID):
@@ -79,7 +79,7 @@ class Medicine(TransactionHandler):
                 raise InvalidTransaction('Invalid action: Medicine DOES NOT exists: {}'.format(med_payload.medicineName))
 
 
-        elif med_payload.action == 'updateMedicineOwner':
+        elif(med_payload.action == 'updateMedicineOwner'):
             medicine = med_state.get_medicine(med_payload.medicineName)
             if medicine:
                 if(med_payload.newOwner is not medicine.newOwner):

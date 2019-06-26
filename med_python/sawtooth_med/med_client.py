@@ -55,12 +55,12 @@ class MedClient:
             medicineAllContents,
             manufactureDate,
             expiryDate,
-            manufacturerID = self._signer.get_public_key().as_hex(),
+            self._signer.get_public_key().as_hex(),
             "createMedicine",
-            newOwner = str(keyfile)
-            wait = wait,
-            auth_user = auth_user,
-            auth_password = auth_password
+            str(keyfile),
+            wait,
+            auth_user,
+            auth_password
         )
 
     def updateMedicine(self, medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, wait = None , auth_user = None, auth_password = None):
@@ -71,12 +71,12 @@ class MedClient:
             medicineAllContents,
             manufactureDate,
             expiryDate,
-            manufacturerID = self._signer.get_public_key().as_hex(),
+            self._signer.get_public_key().as_hex(),
             "updateMedicine",
-            newOwner = str(keyfile)
-            wait = wait,
-            auth_user = auth_user,
-            auth_password = auth_password
+            str(keyfile),
+            wait,
+            auth_user,
+            auth_password
         )
 
     def updateMedicineOwner(self, medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, wait = None , auth_user = None, auth_password = None):
@@ -89,10 +89,10 @@ class MedClient:
             expiryDate,
             manufacturerID,
             "updateMedicineOwner",
-            newOwner = str(keyfile)
-            wait = wait,
-            auth_user = auth_user,
-            auth_password = auth_password
+            str(keyfile),
+            wait,
+            auth_user,
+            auth_password
         )
 
     def deleteMedicine(self , medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, wait = None , auth_user = None, auth_password = None):
@@ -103,12 +103,12 @@ class MedClient:
             medicineAllContents,
             manufactureDate,
             expiryDate,
-            manufacturerID = self._signer.get_public_key().as_hex(),
+            self._signer.get_public_key().as_hex(),
             "deleteMedicine",
-            newOwner = str(keyfile)
-            wait = wait,
-            auth_user = auth_user,
-            auth_password = auth_password
+            str(keyfile),
+            wait,
+            auth_user,
+            auth_password
         )
 
     def list(self, auth_user=None, auth_password=None):
