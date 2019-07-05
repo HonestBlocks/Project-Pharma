@@ -68,7 +68,7 @@ class MedicineHandler(TransactionHandler):
                                         manufactureDate = med_payload.manufactureDate,
                                         expiryDate = med_payload.expiryDate,
                                         manufacturerID = med_payload.manufacturerID,
-                                        newOwner = med_payload.newOwner
+                                        owner = med_payload.newOwner
                                     )
                     med_state.set_medicine(med_payload.medicineName , medicine)
                     _display('Manufacturer: {} updated medicine successfully'.format(signer[:6]))
@@ -81,8 +81,8 @@ class MedicineHandler(TransactionHandler):
         elif(med_payload.action == 'updateMedicineOwner'):
             medicine = med_state.get_medicine(med_payload.medicineName)
             if medicine:
-                if(med_payload.newOwner is not medicine.newOwner):
-                    medicine.newOwner = med_payload.newOwner
+                if(med_payload.newOwner is not medicine.owner):
+                    medicine.owner = med_payload.newOwner
                     med_state.set_medicine(med_payload.medicineName , medicine)
                     _display('Owner Updated by : {}'.format(signer[:6]))
                 else:
