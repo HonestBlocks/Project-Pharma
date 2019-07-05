@@ -11,19 +11,19 @@ class MedPayload:
             medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, manufacturerID , action , newOwner = payload.decode().split(",")
 
         except ValueError:
-                raise InvalidTransaction("Invalid payload serialization")
+            raise InvalidTransaction("Invalid payload serialization")
 
         if not medicineName:
-                raise InvalidTransaction('Medicine Name is required')
+            raise InvalidTransaction('Medicine Name is required')
 
         if not action:
-                raise InvalidTransaction('Action is required')
+            raise InvalidTransaction('Action is required')
 
         if action not in ('createMedicine','updateMedicine','updateMedicineOwner','deleteMedicine'):
-                raise InvalidTransaction('Invalid action: {}'.format(action))
+            raise InvalidTransaction('Invalid action: {}'.format(action))
 
         if action == 'updateMedicineOwner':
-                newOwner = str(newOwner)
+            newOwner = str(newOwner)
 
 
         self._medicineName = medicineName
@@ -36,43 +36,43 @@ class MedPayload:
         self._action = action
         self._newOwner = newOwner
 
-        @staticmethod
-        def from_bytes(payload):
-            return(MedPayload(payload = payload))
+    @staticmethod
+    def from_bytes(payload):
+        return(MedPayload(payload = payload))
 
 
-        @property
-        def medicineName(self):
-            return(self._medicineName)
+    @property
+    def medicineName(self):
+        return(self._medicineName)
 
-        @property
-        def medicineID(self):
-            return(self._medicineID)
+    @property
+    def medicineID(self):
+        return(self._medicineID)
 
-        @property
-        def medicineKeyContent(self):
-            return(self._medicineKeyContent)
+    @property
+    def medicineKeyContent(self):
+        return(self._medicineKeyContent)
 
-        @property
-        def medicineAllContents(self):
-            return(self._medicineAllContents)
+    @property
+    def medicineAllContents(self):
+        return(self._medicineAllContents)
 
-        @property
-        def manufactureDate(self):
-            return(self._manufactureDate)
+    @property
+    def manufactureDate(self):
+        return(self._manufactureDate)
 
-        @property
-        def expiryDate(self):
-            return(self._expiryDate)
+    @property
+    def expiryDate(self):
+        return(self._expiryDate)
 
-        @property
-        def manufacturerID(self):
-            return(self._manufacturerID)
+    @property
+    def manufacturerID(self):
+        return(self._manufacturerID)
 
-        @property
-        def action(self):
-            return(self._action)
+    @property
+    def action(self):
+        return(self._action)
 
-        @property
-        def newOwner(self):
-            return(self._newOwner)
+    @property
+    def newOwner(self):
+        return(self._newOwner)

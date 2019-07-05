@@ -13,7 +13,7 @@ from sawtooth_sdk.processor.exceptions import InvalidTransaction
 
 LOGGER = logging.getLogger(__name__)
 
-class Medicine(TransactionHandler):
+class MedicineHandler(TransactionHandler):
 
     @property
     def family_name(self):
@@ -37,7 +37,7 @@ class Medicine(TransactionHandler):
         med_state = MedState(context)
 
         if med_payload.action == 'createMedicine':
-            if med_state.get_state(med_payload.medicineName) is not None:
+            if med_state.get_medicine(med_payload.medicineName) is not None:
                 raise InvalidTransaction('Invalid action: Medicine already exists: {}'.format(med_payload.medicineName))
 
             medicine = Medicine(
@@ -48,12 +48,11 @@ class Medicine(TransactionHandler):
                             manufactureDate = med_payload.manufactureDate,
                             expiryDate = med_payload.expiryDate,
                             manufacturerID = med_payload.manufacturerID,
-                            newOwner = med_payload.newOwner
+                            owner = med_payload.newOwner
                         )
 
             med_state.set_medicine(med_payload.medicineName , medicine)
             _display('Manufacturer: {} created medicine'.format(signer[:6]))
-
 
 
 
@@ -94,7 +93,7 @@ class Medicine(TransactionHandler):
 
 
         elif med_payload.action == 'deleteMedicine':
-            medicine = med_state.get_state(med_payload.medicineName)
+            medicine = med_state.get_medicine(med_payload.medicineName)
 
             if medicine is None:
                 raise InvalidTransaction('Invalid action: Medicine DOES NOT exists: {}'.format(med_payload.medicineName))
@@ -107,3 +106,17 @@ class Medicine(TransactionHandler):
 
         else:
             raise InvalidTransaction('Unhandled action: {}'.format(med_payload.action))
+
+def _display(msg):
+    n = msg.count("\n")
+
+    if n > 0:
+        msg = msg.split("\n")
+        length = max(len(line) for line in msg)
+    else:
+        length = len(msg)
+        msg = [msg]
+    LOGGER.debug("+" + (length + 2) * "-" + "+")
+    for line in msg:
+        LOGGER.debug("+ " + line.center(length) + " +")
+    LOGGER.debug("+" + (length + 2) * "-" + "+")

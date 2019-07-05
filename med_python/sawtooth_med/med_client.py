@@ -15,6 +15,10 @@ from sawtooth_signing.secp256k1 import Secp256k1PrivateKey
 
 from sawtooth_sdk.protobuf.transaction_pb2 import TransactionHeader
 from sawtooth_sdk.protobuf.transaction_pb2 import Transaction
+from sawtooth_sdk.protobuf.batch_pb2 import Batch
+from sawtooth_sdk.protobuf.batch_pb2 import BatchHeader
+from sawtooth_sdk.protobuf.batch_pb2 import BatchList
+
 
 from sawtooth_med.med_exceptions import MedException
 
@@ -29,7 +33,7 @@ class MedClient:
     def __init__(self, base_url , keyfile = None):
 
         self._base_url = base_url
-
+        
         if keyfile is None:
             self._signer = None
             return
@@ -57,7 +61,7 @@ class MedClient:
             expiryDate,
             self._signer.get_public_key().as_hex(),
             "createMedicine",
-            str(keyfile),
+            'root',
             wait,
             auth_user,
             auth_password
@@ -73,7 +77,7 @@ class MedClient:
             expiryDate,
             self._signer.get_public_key().as_hex(),
             "updateMedicine",
-            str(keyfile),
+            'root',
             wait,
             auth_user,
             auth_password
@@ -89,7 +93,7 @@ class MedClient:
             expiryDate,
             manufacturerID,
             "updateMedicineOwner",
-            str(keyfile),
+            '',
             wait,
             auth_user,
             auth_password
@@ -105,7 +109,7 @@ class MedClient:
             expiryDate,
             self._signer.get_public_key().as_hex(),
             "deleteMedicine",
-            str(keyfile),
+            'root',
             wait,
             auth_user,
             auth_password
@@ -195,8 +199,7 @@ class MedClient:
                 raise MedException("No such medicine: {}".format(name))
 
             if not result.ok:
-                raise MedException("Error {}: {}".format(
-                    result.status_code, result.reason))
+                raise MedException("Error {}: {}".format(result.status_code, result.reason))
 
         except requests.ConnectionError as err:
             raise MedException(

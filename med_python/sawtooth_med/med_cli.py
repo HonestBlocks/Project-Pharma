@@ -8,6 +8,7 @@ import traceback
 import sys
 import pkg_resources
 import datetime
+import colorlog
 
 from sawtooth_med.med_client import MedClient
 from sawtooth_med.med_exceptions import MedException
@@ -41,7 +42,7 @@ def _get_auth_info(args):
 
 def create_console_handler(verbose_level):
     clog = logging.StreamHandler()
-    formatter = ColoredFormatter(
+    formatter = colorlog.ColoredFormatter(
         "%(log_color)s[%(asctime)s %(levelname)-8s%(module)s]%(reset)s "
         "%(white)s%(message)s",
         datefmt="%H:%M:%S",
@@ -634,9 +635,8 @@ def do_list(args):
     client = MedClient(base_url=url, keyfile=None)
 
     medicine_list = [
-        game.split(',')
-        for medicines in client.list(auth_user=auth_user,
-                                 auth_password=auth_password)
+        medicine.split(',')
+        for medicines in client.list(auth_user=auth_user,auth_password=auth_password)
         for medicine in medicines.decode().split('|')
     ]
 
