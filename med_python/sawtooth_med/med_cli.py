@@ -641,7 +641,8 @@ def do_list(args):
     ]
 
     if medicine_list is not None:
-        print(medicine_list[0]+ "\n Write More code to retrieve!")
+        for meds in medicine_list:
+            print(str(meds[1])+ " - "+str(meds[0]))
     else:
         raise MedException("Could not retireve List")
 
