@@ -1,4 +1,3 @@
-
 import sys
 import os
 import argparse
@@ -11,7 +10,7 @@ from sawtooth_sdk.processor.config import get_log_config
 from sawtooth_sdk.processor.config import get_log_dir
 from sawtooth_sdk.processor.config import get_config_dir
 
-from sawtooth_med.processor.handler import Medicine
+from sawtooth_med.processor.handler import MedicineHandler
 
 from sawtooth_med.processor.config.med import MedConfig
 from sawtooth_med.processor.config.med import \
@@ -24,12 +23,9 @@ from sawtooth_med.processor.config.med import \
 DISTRIBUTION_NAME = 'sawtooth_med'
 
 def parse_args(args):
-    parser = argparse.ArgumentParser(
-        formatter_class=argparse.RawTextHelpFormatter)
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
 
-    parser.add_argument(
-        '-C', '--connect',
-        help='Endpoint for the validator connection')
+    parser.add_argument('-C', '--connect',help='Endpoint for the validator connection')
 
     parser.add_argument('-v', '--verbose',
                         action='count',
@@ -92,7 +88,7 @@ def main(args = None):
 
         init_console_logging(verbose_level=opts.verbose)
 
-        handler = Medicine()
+        handler = MedicineHandler()
         processor.add_handler(handler)
         processor.start()
     except KeyboardInterrupt:

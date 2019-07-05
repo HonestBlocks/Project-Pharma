@@ -32,13 +32,13 @@ RUN python3 get-pip.py
 
 RUN python3 -m pip install sawtooth_sdk
 
+RUN python3 -m pip install colorlog
+
 RUN mkdir -p /var/log/sawtooth
 
 ENV PATH=$PATH:/project/bin
 
 ADD . /project
-
-WORKDIR /project
 
 CMD echo "\033[0;32m--- Building med-tp-python ---\n\033[0m" \
  && source /bin/protogen \

@@ -5,6 +5,8 @@ services:
   settings-tp:
     image: hyperledger/sawtooth-settings-tp:nightly
     container_name: sawtooth-settings-tp
+    volumes:
+      - keyshare:/root
     depends_on:
       - validator
     command: |
@@ -16,6 +18,8 @@ services:
   med-tp-python:
     image: harsh/med:v3
     container_name: sawtooth-med-tp-python
+    volumes:
+      - keyshare:/root
     depends_on:
       - validator
     command: |
@@ -28,6 +32,8 @@ services:
   client:
     image: hyperledger/sawtooth-shell:nightly
     container_name: sawtooth-shell
+    volumes:
+      - keyshare:/root
     depends_on:
       - validator
     command: |
@@ -72,6 +78,8 @@ services:
   rest-api:
     image: hyperledger/sawtooth-rest-api:nightly
     container_name: sawtooth-rest-api
+    volumes:
+      - keyshare:/root
     ports:
       - "8008:8008"
     depends_on:
@@ -86,6 +94,8 @@ services:
   devmode-rust:
     image: hyperledger/sawtooth-devmode-engine-rust:nightly
     container_name: sawtooth-devmode-engine-rust
+    volumes:
+      - keyshare:/root
     depends_on:
       - validator
     command: |
@@ -93,3 +103,6 @@ services:
         devmode-engine-rust -v --connect tcp://validator:5050
       "
     stop_signal: SIGKILL
+
+volumes:
+  keyshare:
