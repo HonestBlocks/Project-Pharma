@@ -8,7 +8,7 @@ class MedPayload:
 
     def __init__(self , payload):
         try:
-            medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, manufacturerID , action , newOwner = payload.decode().split(",")
+            medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, stock, manufacturerID , action , newOwner= payload.decode().split(",")
 
         except ValueError:
             raise InvalidTransaction("Invalid payload serialization")
@@ -19,7 +19,7 @@ class MedPayload:
         if not action:
             raise InvalidTransaction('Action is required')
 
-        if action not in ('createMedicine','updateMedicine','updateMedicineOwner','deleteMedicine'):
+        if action not in ('createMedicine','updateMedicine','updateMedicineOwner','deleteMedicine', 'produce'):
             raise InvalidTransaction('Invalid action: {}'.format(action))
 
         if action == 'updateMedicineOwner':
@@ -32,6 +32,7 @@ class MedPayload:
         self._medicineAllContents = medicineAllContents
         self._manufactureDate = manufactureDate
         self._expiryDate = expiryDate
+        self._stock = stock
         self._manufacturerID = manufacturerID
         self._action = action
         self._newOwner = newOwner
@@ -76,3 +77,7 @@ class MedPayload:
     @property
     def newOwner(self):
         return(self._newOwner)
+
+    @property
+    def stock(self):
+        return(self._stock)

@@ -33,7 +33,7 @@ class MedClient:
     def __init__(self, base_url , keyfile = None):
 
         self._base_url = base_url
-        
+
         if keyfile is None:
             self._signer = None
             return
@@ -51,7 +51,7 @@ class MedClient:
 
         self._signer = CryptoFactory(create_context('secp256k1')).new_signer(private_key)
 
-    def createMedicine(self, medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, wait = None , auth_user = None, auth_password = None):
+    def createMedicine(self, medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate , stock, wait = None , auth_user = None, auth_password = None):
         return self._send_med_txn(
             medicineName,
             medicineID,
@@ -59,6 +59,7 @@ class MedClient:
             medicineAllContents,
             manufactureDate,
             expiryDate,
+            stock,
             self._signer.get_public_key().as_hex(),
             "createMedicine",
             'root',
@@ -67,7 +68,7 @@ class MedClient:
             auth_password
         )
 
-    def updateMedicine(self, medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, wait = None , auth_user = None, auth_password = None):
+    def updateMedicine(self, medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, stock, wait = None , auth_user = None, auth_password = None):
         return self._send_med_txn(
             medicineName,
             medicineID,
@@ -75,6 +76,7 @@ class MedClient:
             medicineAllContents,
             manufactureDate,
             expiryDate,
+            stock,
             self._signer.get_public_key().as_hex(),
             "updateMedicine",
             'root',
@@ -83,7 +85,7 @@ class MedClient:
             auth_password
         )
 
-    def updateMedicineOwner(self, medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, wait = None , auth_user = None, auth_password = None):
+    def updateMedicineOwner(self, medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, stock, wait = None , auth_user = None, auth_password = None):
         return self._send_med_txn(
             medicineName,
             medicineID,
@@ -91,7 +93,8 @@ class MedClient:
             medicineAllContents,
             manufactureDate,
             expiryDate,
-            manufacturerID,
+            stock,
+            self._signer.get_public_key().as_hex(),
             "updateMedicineOwner",
             '',
             wait,
@@ -99,7 +102,7 @@ class MedClient:
             auth_password
         )
 
-    def deleteMedicine(self , medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, wait = None , auth_user = None, auth_password = None):
+    def produce(self, medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, stock, wait = None , auth_user = None, auth_password = None):
         return self._send_med_txn(
             medicineName,
             medicineID,
@@ -107,6 +110,24 @@ class MedClient:
             medicineAllContents,
             manufactureDate,
             expiryDate,
+            stock,
+            self._signer.get_public_key().as_hex(),
+            "produce",
+            'root',
+            wait,
+            auth_user,
+            auth_password
+        )
+
+    def deleteMedicine(self , medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, stock, wait = None , auth_user = None, auth_password = None):
+        return self._send_med_txn(
+            medicineName,
+            medicineID,
+            medicineKeyContent,
+            medicineAllContents,
+            manufactureDate,
+            expiryDate,
+            stock,
             self._signer.get_public_key().as_hex(),
             "deleteMedicine",
             'root',
@@ -219,13 +240,14 @@ class MedClient:
                      medicineAllContents,
                      manufactureDate,
                      expiryDate,
+                     stock,
                      manufacturerID,
                      action,
                      newOwner,
                      wait=None,
                      auth_user=None,
                      auth_password=None):
-        payload = ",".join([medicineName, medicineID, medicineKeyContent, medicineAllContents, str(manufactureDate), str(expiryDate), str(manufacturerID) , action , newOwner]).encode()
+        payload = ",".join([medicineName, medicineID, medicineKeyContent, medicineAllContents, str(manufactureDate), str(expiryDate), str(stock), str(manufacturerID) , action , newOwner]).encode()
 
         address = self._get_address(medicineName)
 

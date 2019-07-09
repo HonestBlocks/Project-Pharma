@@ -1,0 +1,5 @@
+#!/bin/bash
+echo "-------------------------------------------"
+echo "RUNNING POET FILE"
+echo "-------------------------------------------"
+docker-compose -f docker-compose-NORMAL.yaml up
