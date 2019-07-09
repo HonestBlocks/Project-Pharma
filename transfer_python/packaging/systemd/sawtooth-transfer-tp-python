@@ -1,0 +1,1 @@
+SAWTOOTH_TRANSFER_TP_PYTHON_ARGS=-v -C tcp://localhost:4004

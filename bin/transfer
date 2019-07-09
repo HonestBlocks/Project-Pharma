@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+import sysconfig
+
+build_str = "lib.{}-{}.{}".format(
+    sysconfig.get_platform(),
+    sys.version_info.major, sys.version_info.minor)
+
+sys.path.insert(0, os.path.join(
+    os.path.dirname(os.path.dirname(os.path.realpath(__file__))),
+    ))
+
+sys.path.insert(0, os.path.join(
+    os.path.dirname(os.path.dirname(os.path.realpath(__file__))),
+    'transfer_python'))
+
+from sawtooth_transfer.transfer_cli import main_wrapper
+
+if __name__ == '__main__':
+    main_wrapper()

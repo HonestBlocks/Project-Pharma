@@ -1,0 +1,13 @@
+[Unit]
+Description=Sawtooth TRANSFER TP Python
+After=network.target
+
+[Service]
+User=sawtooth
+Group=sawtooth
+EnvironmentFile=-/etc/default/sawtooth-transfer-tp-python
+ExecStart=/usr/bin/transfer-tp-python $SAWTOOTH_TRANSFER_TP_PYTHON_ARGS
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
