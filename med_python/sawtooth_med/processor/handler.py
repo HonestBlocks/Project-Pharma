@@ -47,8 +47,9 @@ class MedicineHandler(TransactionHandler):
                             medicineAllContents = med_payload.medicineAllContents,
                             manufactureDate = med_payload.manufactureDate,
                             expiryDate = med_payload.expiryDate,
+                            stock = med_payload.stock,
                             manufacturerID = med_payload.manufacturerID,
-                            owner = med_payload.newOwner
+                            owner = med_payload.newOwner,
                         )
 
             med_state.set_medicine(med_payload.medicineName , medicine)
@@ -67,8 +68,9 @@ class MedicineHandler(TransactionHandler):
                                         medicineAllContents = med_payload.medicineAllContents,
                                         manufactureDate = med_payload.manufactureDate,
                                         expiryDate = med_payload.expiryDate,
+                                        stock = med_payload.stock,
                                         manufacturerID = med_payload.manufacturerID,
-                                        owner = med_payload.newOwner
+                                        owner = med_payload.newOwner,
                                     )
                     med_state.set_medicine(med_payload.medicineName , medicine)
                     _display('Manufacturer: {} updated medicine successfully'.format(signer[:6]))
@@ -99,10 +101,23 @@ class MedicineHandler(TransactionHandler):
                 raise InvalidTransaction('Invalid action: Medicine DOES NOT exists: {}'.format(med_payload.medicineName))
 
             if(signer == medicine.manufacturerID):
-                med_state.delete_medicine(med_payload.name)
-                _display('Medecine Info deleted successfully by: {}'.format(signer[:6]))
+                med_state.delete_medicine(med_payload.medicineName)
+                _display('Medicine Info deleted successfully by: {}'.format(signer[:6]))
             else:
                 raise InvalidTransaction('Invalid action UNAUTHORISED ACTION')
+
+
+
+        elif med_payload.action == 'produce':
+            medicine = med_state.get_medicine(med_payload.medicineName)
+
+            if medicine is None:
+                raise InvalidTransaction('Invalid action: Medicine DOES NOT exists: {}'.format(med_payload.medicineName))
+
+            medicine.stock = med_payload.stock
+            med_state.set_medicine(med_payload.medicineName , medicine)
+
+            _display('Medicine Info updated successfully by: {}'.format(signer[:6]))
 
         else:
             raise InvalidTransaction('Unhandled action: {}'.format(med_payload.action))

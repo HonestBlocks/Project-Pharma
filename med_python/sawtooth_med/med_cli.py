@@ -337,6 +337,70 @@ def add_deleteMedicine_parser(subparsers , parent_parser):
         help='set time, in seconds, to wait for asset to commit'
     )
 
+def add_produce_parser(subparsers , parent_parser):
+    parser = subparsers.add_parser(
+        'produce',
+        help = 'Produce Medicines',
+        parents = [parent_parser]
+    )
+
+    parser.add_argument(
+        'medicineName',
+        type = str,
+        help = 'Unique Identifier for a Medicine'
+    )
+
+    parser.add_argument(
+        'medicineID',
+        type = str,
+        help = 'ID of medicine asset'
+    )
+
+    parser.add_argument(
+        'stock',
+        type = int,
+        help = 'Add stocks of your medicine'
+    )
+
+    parser.add_argument(
+        '--url',
+        type = str,
+        help = 'Specify URL of RestAPI'
+    )
+
+    parser.add_argument(
+        '--username',
+        type = str,
+        help = 'Identify name of Owner\'s private key file'
+    )
+
+
+    parser.add_argument(
+        '--key-dir',
+        type = str,
+        help = 'Identify directory of Owner\'s private ke file'
+    )
+
+    parser.add_argument(
+        '--auth-user',
+        type = str,
+        help = 'Specify username for authentication of RestAPI'
+    )
+
+    parser.add_argument(
+        '--auth-password',
+        type = str,
+        help = 'Specify password for authentication of RestAPI'
+    )
+
+    parser.add_argument(
+        '--wait',
+        nargs='?',
+        const=sys.maxsize,
+        type=int,
+        help='set time, in seconds, to wait for asset to commit'
+    )
+
 
 def add_show_parser(subparsers , parent_parser):
     parser = subparsers.add_parser(
@@ -458,6 +522,7 @@ def create_parser(prog_name):
     add_show_parser(subparsers, parent_parser)
     add_updateMedicine_parser(subparsers, parent_parser)
     add_updateMedicineOwner_parser(subparsers , parent_parser)
+    add_produce_parser(subparsers , parent_parser)
     add_deleteMedicine_parser(subparsers, parent_parser)
 
     return parser
@@ -485,6 +550,7 @@ def do_createMedicine(args):
             medicineAllContents,
             manufactureDate,
             expiryDate,
+            stock = 0,
             wait = args.wait,
             auth_user = auth_user,
             auth_password = auth_password
@@ -497,6 +563,7 @@ def do_createMedicine(args):
             medicineAllContents,
             manufactureDate,
             expiryDate,
+            stock = 0,
             auth_user = auth_user,
             auth_password = auth_password
         )
@@ -525,6 +592,7 @@ def do_updateMedicine(args):
             medicineAllContents,
             manufactureDate,
             expiryDate,
+            stock ='',
             wait = args.wait,
             auth_user = auth_user,
             auth_password = auth_password
@@ -537,6 +605,7 @@ def do_updateMedicine(args):
             medicineAllContents,
             manufactureDate,
             expiryDate,
+            stock = '',
             auth_user = auth_user,
             auth_password = auth_password
         )
@@ -560,6 +629,7 @@ def do_updateMedicineOwner(args):
             medicineAllContents = '',
             manufactureDate = '',
             expiryDate = '',
+            stock = '',
             wait = args.wait,
             auth_user = auth_user,
             auth_password = auth_password
@@ -572,9 +642,50 @@ def do_updateMedicineOwner(args):
             medicineAllContents = '',
             manufactureDate= '',
             expiryDate= '',
+            stock = '',
             auth_user = auth_user,
             auth_password = auth_password
         )
+    print("Response : {}".format(response))
+
+def do_produce(args):
+    medicineName = args.medicineName
+    medicineID = args.medicineID
+    stock = args.stock
+
+    url = _get_url(args)
+    keyfile = _get_keyfile(args)
+    auth_user , auth_password = _get_auth_info(args)
+
+    client = MedClient(base_url = url , keyfile = keyfile)
+
+    if args.wait and args.wait > 0:
+        response = client.produce(
+            medicineName,
+            medicineID,
+            medicineKeyContent = '',
+            medicineAllContents = '',
+            manufactureDate = '',
+            expiryDate = '',
+            stock = stock,
+            wait = args.wait,
+            auth_user = auth_user,
+            auth_password = auth_password
+        )
+
+    else:
+        response = client.produce(
+            medicineName,
+            medicineID,
+            medicineKeyContent = '',
+            medicineAllContents = '',
+            manufactureDate= '',
+            expiryDate= '',
+            stock = stock,
+            auth_user = auth_user,
+            auth_password = auth_password
+        )
+
     print("Response : {}".format(response))
 
 
@@ -595,6 +706,7 @@ def do_deleteMedicine(args):
             medicineAllContents = '',
             manufactureDate = '',
             expiryDate = '',
+            stock = '',
             wait = args.wait,
             auth_user = auth_user,
             auth_password = auth_password
@@ -607,6 +719,7 @@ def do_deleteMedicine(args):
             medicineAllContents = '',
             manufactureDate= '',
             expiryDate= '',
+            stock = '',
             auth_user = auth_user,
             auth_password = auth_password
         )
@@ -642,7 +755,7 @@ def do_list(args):
 
     if medicine_list is not None:
         for meds in medicine_list:
-            print(str(meds[1])+ " - "+str(meds[0]))
+            print(str(meds[1])+ " - "+str(meds[0])+ " - " + str(meds[6]))
     else:
         raise MedException("Could not retireve List")
 
@@ -671,6 +784,9 @@ def main(prog_name = os.path.basename(sys.argv[0]), args = None):
 
     elif args.command == 'deleteMedicine':
         do_deleteMedicine(args)
+
+    elif args.command == 'produce':
+        do_produce(args)
 
     elif args.command == 'list':
         do_list(args)

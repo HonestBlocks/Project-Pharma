@@ -7,6 +7,7 @@ services:
     container_name: sawtooth-settings-tp
     volumes:
       - keyshare:/root
+      - blocks:/var/lib/sawtooth
     depends_on:
       - validator
     command: |
@@ -20,6 +21,7 @@ services:
     container_name: sawtooth-med-tp-python
     volumes:
       - keyshare:/root
+      - blocks:/var/lib/sawtooth
     depends_on:
       - validator
     command: |
@@ -34,6 +36,7 @@ services:
     container_name: sawtooth-shell
     volumes:
       - keyshare:/root
+      - blocks:/var/lib/sawtooth
     depends_on:
       - validator
     command: |
@@ -47,6 +50,8 @@ services:
   validator:
     image: hyperledger/sawtooth-validator:nightly
     container_name: sawtooth-validator
+    volumes:
+      - blocks:/var/lib/sawtooth
     expose:
       - 4004
       - 8800
@@ -80,6 +85,7 @@ services:
     container_name: sawtooth-rest-api
     volumes:
       - keyshare:/root
+      - blocks:/var/lib/sawtooth
     ports:
       - "8008:8008"
     depends_on:
@@ -96,6 +102,7 @@ services:
     container_name: sawtooth-devmode-engine-rust
     volumes:
       - keyshare:/root
+      - blocks:/var/lib/sawtooth
     depends_on:
       - validator
     command: |
@@ -106,3 +113,4 @@ services:
 
 volumes:
   keyshare:
+  blocks:

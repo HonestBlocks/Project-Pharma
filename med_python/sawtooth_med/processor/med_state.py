@@ -10,13 +10,14 @@ def _make_medicine_address(medicineName):
 
 class Medicine:
 
-    def __init__(self, medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, manufacturerID, owner):
+    def __init__(self, medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, stock, manufacturerID, owner):
         self.medicineName = medicineName
         self.medicineID = medicineID
         self.medicineKeyContent = medicineKeyContent
         self.medicineAllContents = medicineAllContents
         self.manufactureDate = manufactureDate
         self.expiryDate = expiryDate
+        self.stock = stock
         self.manufacturerID = manufacturerID
         self.owner = owner
 
@@ -90,8 +91,8 @@ class MedState:
         medicines = {}
         try:
             for medicine in data.decode().split("|"):
-                medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, manufacturerID, owner = medicine.split(",")
-                medicines[medicineName] = Medicine( medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, manufacturerID, owner)
+                medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, stock, manufacturerID, owner= medicine.split(",")
+                medicines[medicineName] = Medicine( medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, stock, manufacturerID, owner)
         except ValueError:
             raise InternalError("Failed to de-serialize medicine data")
         return medicines
@@ -101,6 +102,6 @@ class MedState:
     def _serialize(self , medicines):
         med_strs = []
         for medicineName , m in medicines.items():
-            med_str = ",".join([medicineName, m.medicineID, m.medicineKeyContent, m.medicineAllContents, m.manufactureDate, m.expiryDate, m.manufacturerID, m.owner])
+            med_str = ",".join([medicineName, m.medicineID, m.medicineKeyContent, m.medicineAllContents, m.manufactureDate, m.expiryDate, m.stock ,m.manufacturerID, m.owner])
             med_strs.append(med_str)
         return "|".join(sorted(med_strs)).encode()
