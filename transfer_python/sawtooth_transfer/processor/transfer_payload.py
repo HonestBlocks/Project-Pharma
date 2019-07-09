@@ -8,7 +8,7 @@ class TransferPayload:
 
     def __init__(self, payload):
         try:
-            medicineName, medicineID , units, origin, destination, boxID, logisticsID, shipmentID, boxIDArray, shipmentStatus , action = payload.decode().split(",")
+            medicineName, medicineID , units, originAdd, destinationAdd, boxID, logisticsID, shipmentID, boxIDArray, shipmentStatus , action = payload.decode().split(",")
 
             except ValueError:
                 raise InvalidTransaction("Invalid payload serialization")
@@ -24,8 +24,8 @@ class TransferPayload:
         self._medicineName = medicineName
         self._medicineID = medicineID
         self._units = units
-        self._origin = origin
-        self._destination = destination
+        self._originAdd = originAdd
+        self._destinationAdd = destinationAdd
         self._boxID = boxID
         self._logisticsID = logisticsID
         self._shipmentID = shipmentID
@@ -51,12 +51,12 @@ class TransferPayload:
         return(self._units)
 
     @property
-    def origin(self):
-        return(self._origin)
+    def originAdd(self):
+        return(self._originAdd)
 
     @property
-    def destination(self):
-        return(self._destination)
+    def destinationAdd(self):
+        return(self._destinationAdd)
 
     @property
     def boxID(self):
