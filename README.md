@@ -1,8 +1,13 @@
-To run CLI application, 
+To run CLI application,
 
-1. Build docker file from one directory up
+From a directory above:
 
-2. docker-compose -f docker-compose-NORMAL.yaml up
+./dock
+
+./normal  (for devMode consensus)
+
+./poet    (for PoET consensus)
 
 
-Log in to client container to explore
+
+Log in to client containers to explore (med, transfer)
