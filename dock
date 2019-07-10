@@ -10,4 +10,6 @@ docker volume rm project_blocks
 
 docker build -f med_python/Dockerfile -t harsh/med:v3 .
 
+docker build -f transfer_python/Dockerfile -t harsh/transfer:v1 .
+
 echo "Done Shit!"

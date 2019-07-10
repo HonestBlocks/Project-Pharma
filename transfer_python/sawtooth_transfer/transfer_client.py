@@ -73,7 +73,7 @@ class TransferClient:
                         )
     
     
-    def updateBox(self, medecineName, medicineID, units, boxID, wait = None, auth_user = None, auth_password = None):
+    def updateBox(self, medicineName, medicineID, units, boxID, wait = None, auth_user = None, auth_password = None):
         return self._send_transfer_txn(
                         medicineName,
                         medicineID,
@@ -266,9 +266,9 @@ class TransferClient:
                         auth_user = None,
                         auth_password =None):
 
-        payload = ",".join([medicineName, medicineID, units, originAdd, destinationAdd, str(boxID), str(logisticsID), str(shipmentID), str(boxIDArray), shipmentStatus, action]).encode()
+        payload = ",".join([medicineName, str(medicineID), str(units), originAdd, destinationAdd, str(boxID), str(logisticsID), str(shipmentID), str(boxIDArray), shipmentStatus, action]).encode()
 
-        if(boxID = ''):
+        if(boxID is None):
             address = self._get_address(shipmentID)
         else:
             address = self._get_address(boxID)

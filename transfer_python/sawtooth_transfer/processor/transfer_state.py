@@ -43,7 +43,7 @@ class TransferState:
     
 
     def _load_medicines(self , medicineName):
-        address = _make_address(medicineName)
+        address = _make_medicine_address(medicineName)
         if address in self._address_cache:
             if self._address_cache[address]:
                 serialized_medicines = self._address_cache[address]

@@ -10,7 +10,7 @@ class TransferPayload:
         try:
             medicineName, medicineID , units, originAdd, destinationAdd, boxID, logisticsID, shipmentID, boxIDArray, shipmentStatus , action = payload.decode().split(",")
 
-            except ValueError:
+        except ValueError:
                 raise InvalidTransaction("Invalid payload serialization")
         
         if not action:
@@ -23,7 +23,7 @@ class TransferPayload:
 
         self._medicineName = medicineName
         self._medicineID = medicineID
-        self._units = units
+        self._units = int(units)
         self._originAdd = originAdd
         self._destinationAdd = destinationAdd
         self._boxID = boxID

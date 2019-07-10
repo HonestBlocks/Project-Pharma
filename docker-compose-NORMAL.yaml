@@ -30,6 +30,20 @@ services:
       "
     stop_signal: SIGKILL
 
+  transfer-tp-python:
+    image: harsh/transfer:v1
+    container_name: sawtooth-transfer-tp-python
+    volumes:
+      - keyshare:/root
+      - blocks:/var/lib/sawtooth
+    depends_on:
+      - validator
+    command: |
+      bash -c "
+        transfer-tp-python -vv -C tcp://validator:4004
+      "
+    stop_signal: SIGKILL
+
 
   client:
     image: hyperledger/sawtooth-shell:nightly
