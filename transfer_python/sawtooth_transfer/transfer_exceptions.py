@@ -1,0 +1,3 @@
+class TransferException(Exception):
+    pass
+    
