@@ -45,9 +45,9 @@ class TransferHandler(TransactionHandler):
 
             medicine = transfer_state.get_medicine(transfer_payload.medicineName)
             if medicine:
-                if(medicine.stock >= transfer_payload.units):
-                    medicine.stock = medicine.stock - transfer_payload.units
-                    transfer_state.set_medicine(transfer_payload.medicineName , medicine)
+                if( int(medicine.stock) >= int(transfer_payload.units)):
+                    medicine.stock = str(int(medicine.stock) - int(transfer_payload.units))
+                    # transfer_state.set_medicine(transfer_payload.medicineName , medicine)
                     box = Box(
                         medicineName = transfer_payload.medicineName,
                         medicineID = transfer_payload.medicineID,
@@ -69,7 +69,7 @@ class TransferHandler(TransactionHandler):
             if box:
                 medicine = transfer_state.get_medicine(transfer_payload.medicineName)
                 if medicine:
-                    if(medicine.stock >= transfer_payload.units):
+                    if(int(medicine.stock) >= int(transfer_payload.units)):
                         medicine.stock = medicine.stock - transfer_payload.units
                         transfer_state.set_medicine(transfer_payload.medicineName , medicine)
                         box = Box(
