@@ -12,6 +12,19 @@ def _make_medicine_address(medicineName):
 def _make_transfer_address(name):
     return(TRANSFER_NAMESPACE+hashlib.sha512(name.encode('utf-8')).hexdigest()[:64])
 
+class Medicine:
+
+    def __init__(self, medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, stock, manufacturerID, owner):
+        self.medicineName = medicineName
+        self.medicineID = medicineID
+        self.medicineKeyContent = medicineKeyContent
+        self.medicineAllContents = medicineAllContents
+        self.manufactureDate = manufactureDate
+        self.expiryDate = expiryDate
+        self.stock = stock
+        self.manufacturerID = manufacturerID
+        self.owner = owner
+
 
 class Box:
 

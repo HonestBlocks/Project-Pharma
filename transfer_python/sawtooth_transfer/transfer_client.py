@@ -24,6 +24,9 @@ from sawtooth_transfer.transfer_exceptions import TransferException
 MED_NAMESPACE = hashlib.sha512('med'.encode("utf-8")).hexdigest()[0:6]
 TRANSFER_NAMESPACE = hashlib.sha512('transfer'.encode("utf-8")).hexdigest()[0:6]
 
+def _make_medicine_address(medicineName):
+    return(MED_NAMESPACE+hashlib.sha512(medicineName.encode('utf-8')).hexdigest()[:64])
+
 
 def _sha512(data):
     return hashlib.sha512(data).hexdigest()
@@ -272,20 +275,25 @@ class TransferClient:
             address = self._get_address(shipmentID)
         else:
             address = self._get_address(boxID)
+        
+        med_address = _make_medicine_address(medicineName)
 
         header = TransactionHeader(
             signer_public_key=self._signer.get_public_key().as_hex(),
             family_name="transfer",
             family_version="1.0",
-            inputs=[address],
-            outputs=[address],
+            inputs=[address, med_address],
+            outputs=[address, med_address],
             dependencies=[],
             payload_sha512=_sha512(payload),
             batcher_public_key=self._signer.get_public_key().as_hex(),
             nonce=hex(random.randint(0, 2**64))
         ).SerializeToString()
 
+        print("1"*30)
         signature = self._signer.sign(header)
+
+        print("2"*30)
 
         transaction = Transaction(
             header=header,
@@ -293,8 +301,12 @@ class TransferClient:
             header_signature=signature
         )
 
+        print("3"*30)
+
         batch_list = self._create_batch_list([transaction])
         batch_id = batch_list.batches[0].header_signature
+
+        print("4"*30)
 
         if wait and wait > 0:
             wait_time = 0
@@ -323,7 +335,8 @@ class TransferClient:
             auth_user=auth_user,
             auth_password=auth_password)
 
-
+        print("5"*30)
+        
     def _create_batch_list(self, transactions):
         transaction_signatures = [t.header_signature for t in transactions]
 
@@ -338,7 +351,9 @@ class TransferClient:
             header=header,
             transactions=transactions,
             header_signature=signature)
+        print("6"*30)    
         return BatchList(batches=[batch])
+
 
 
 
