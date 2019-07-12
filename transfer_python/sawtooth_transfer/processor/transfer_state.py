@@ -71,7 +71,6 @@ class TransferState:
             else:
                 self._address_cache[address] = None
                 fmedicines = {}
-
         return fmedicines
 
 
@@ -143,24 +142,6 @@ class TransferState:
             self._delete_medicine(medicineName)
 
 
-    def set_box(self, boxID , box):
-        boxes = self._load_boxes(boxID = boxID)
-        boxes[boxID] = box
-        self._store_box(boxID , boxes = boxes)
-
-
-    def set_shipment(self, shipmentID , shipment):
-        shipments = self._load_shipments(shipmentID = shipmentID)
-        shipments[shipmentID] = shipment
-        self._store_shipment(shipmentID , shipments = shipments)
-    
-
-    def set_medicine(self, medicineName , medicine):
-        medicines = self._load_medicines(medicineName = medicineName)
-        medicines[medicineName] = medicine
-        self._store_medicine(medicineName , medicines = medicines)
-
-
     def _store_shipment(self , shipmentID , shipments):
         address = _make_transfer_address(shipmentID)
         state_data = self._serializes(shipments)
@@ -180,6 +161,23 @@ class TransferState:
         state_data = self._serialize(medicines)
         self._address_cache[address] = state_data
         self._context.set_state({address: state_data} , timeout = self.TIMEOUT)
+
+    def set_box(self, boxID , box):
+        boxes = self._load_boxes(boxID = boxID)
+
+        boxes[boxID] = box
+        self._store_box(boxID , boxes = boxes)
+
+    def set_shipment(self, shipmentID , shipment):
+        shipments = self._load_shipments(shipmentID = shipmentID)
+        shipments[shipmentID] = shipment
+        self._store_shipment(shipmentID , shipments = shipments)
+    
+
+    def set_medicine(self, medicineName , medicine):
+        medicines = self._load_medicines(medicineName = medicineName)
+        medicines[medicineName] = medicine
+        self._store_medicine(medicineName , medicines = medicines)
 
 
     def _delete_shipment(self , shipmentID):
@@ -218,7 +216,7 @@ class TransferState:
         try:
             for medicine in data.decode().split("|"):
                 medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, stock, manufacturerID, owner= medicine.split(",")
-                medicines[medicineName] = Medicine( medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, stock, manufacturerID, owner)
+                medicines[medicineName] = Medicine(medicineName, medicineID, medicineKeyContent, medicineAllContents, manufactureDate, expiryDate, stock, manufacturerID, owner)
         except ValueError:
             raise InternalError("Failed to de-serialize medicine data")
         return medicines
@@ -237,9 +235,9 @@ class TransferState:
 
 
     def _deserializeb(self , data):
-        boxes = {}
 
         try:
+            boxes = {}
             for box in data.decode().split("|"):
                 medicineName, medicineID, units, boxID = box.split(",")
                 boxes[boxID] = Box(medicineName, medicineID, units, boxID)
@@ -260,7 +258,7 @@ class TransferState:
     def _serializes(self , shipments):
         shipment_strs = []
         for shipmentID , m in shipments.items():
-            shipment_str = ",".join([shipmentID, m.logisticsID, m.boxIDArray, m.origin, m.destination, m.shipmentStatus])
+            shipment_str = ",".join([shipmentID, m.logisticsID, str(m.boxIDArray), m.origin, m.destination, str(m.shipmentStatus)])
             shipment_strs.append(shipment_str)
         return "|".join(sorted(shipment_strs)).encode()
 
@@ -268,6 +266,6 @@ class TransferState:
     def _serializeb(self , boxes):
         box_strs = []
         for boxID , m in boxes.items():
-            box_str = ",".join([medicineName, medicineID, units, boxID])
+            box_str = ",".join([str(m.medicineName), str(m.medicineID), str(m.units), str(boxID)])
             box_strs.append(box_str)
         return "|".join(sorted(box_strs)).encode()

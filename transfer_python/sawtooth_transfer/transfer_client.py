@@ -104,7 +104,7 @@ class TransferClient:
                         '',
                         originAdd,
                         destinationAdd,
-                        '',
+                        shipmentStatus,
                         self._signer.get_public_key().as_hex(),
                         shipmentID,
                         boxIDArray,
@@ -272,10 +272,11 @@ class TransferClient:
         payload = ",".join([medicineName, str(medicineID), str(units), originAdd, destinationAdd, str(boxID), str(logisticsID), str(shipmentID), str(boxIDArray), shipmentStatus, action]).encode()
 
         if(boxID is None):
-            address = self._get_address(shipmentID)
+            address = self._get_address(str(shipmentID))
         else:
-            address = self._get_address(boxID)
+            address = self._get_address(str(boxID))
         
+
         med_address = _make_medicine_address(medicineName)
 
         header = TransactionHeader(
@@ -290,10 +291,7 @@ class TransferClient:
             nonce=hex(random.randint(0, 2**64))
         ).SerializeToString()
 
-        print("1"*30)
         signature = self._signer.sign(header)
-
-        print("2"*30)
 
         transaction = Transaction(
             header=header,
@@ -301,12 +299,8 @@ class TransferClient:
             header_signature=signature
         )
 
-        print("3"*30)
-
         batch_list = self._create_batch_list([transaction])
         batch_id = batch_list.batches[0].header_signature
-
-        print("4"*30)
 
         if wait and wait > 0:
             wait_time = 0
@@ -335,8 +329,7 @@ class TransferClient:
             auth_user=auth_user,
             auth_password=auth_password)
 
-        print("5"*30)
-        
+
     def _create_batch_list(self, transactions):
         transaction_signatures = [t.header_signature for t in transactions]
 
@@ -351,9 +344,7 @@ class TransferClient:
             header=header,
             transactions=transactions,
             header_signature=signature)
-        print("6"*30)    
         return BatchList(batches=[batch])
-
 
 
 
