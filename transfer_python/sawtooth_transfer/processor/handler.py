@@ -4,6 +4,7 @@ import datetime
 from sawtooth_transfer.processor.transfer_payload import TransferPayload
 from sawtooth_transfer.processor.transfer_state import Box
 from sawtooth_transfer.processor.transfer_state import Shipment
+from sawtooth_transfer.processor.transfer_state import Medicine
 from sawtooth_transfer.processor.transfer_state import TransferState
 from sawtooth_transfer.processor.transfer_state import TRANSFER_NAMESPACE
 from sawtooth_transfer.processor.transfer_state import MED_NAMESPACE
@@ -47,7 +48,7 @@ class TransferHandler(TransactionHandler):
             if medicine:
                 if( int(medicine.stock) >= int(transfer_payload.units)):
                     medicine.stock = str(int(medicine.stock) - int(transfer_payload.units))
-                    # transfer_state.set_medicine(transfer_payload.medicineName , medicine)
+                    transfer_state.set_medicine(transfer_payload.medicineName , medicine)
                     box = Box(
                         medicineName = transfer_payload.medicineName,
                         medicineID = transfer_payload.medicineID,
@@ -70,7 +71,7 @@ class TransferHandler(TransactionHandler):
                 medicine = transfer_state.get_medicine(transfer_payload.medicineName)
                 if medicine:
                     if(int(medicine.stock) >= int(transfer_payload.units)):
-                        medicine.stock = medicine.stock - transfer_payload.units
+                        medicine.stock = str(int(medicine.stock) - int(transfer_payload.units))
                         transfer_state.set_medicine(transfer_payload.medicineName , medicine)
                         box = Box(
                             medicineName = transfer_payload.medicineName,
@@ -103,7 +104,6 @@ class TransferHandler(TransactionHandler):
                     destinationAdd = transfer_payload.destinationAdd,
                     shipmentStatus = transfer_payload.shipmentStatus
             )
-
 
             transfer_state.set_shipment(transfer_payload.shipmentID , shipment)
             _display('Logistics Company : {} created Shipment'.format(signer[:6]))
