@@ -234,13 +234,13 @@ def add_createshipment_parser(subparsers, parent_parser):
     )
 
     parser.add_argument(
-        'originAdd',
+        'origin',
         type = str,
         help = 'Origin address'
     )
 
     parser.add_argument(
-        'destinationAdd',
+        'destination',
         type = str,
         help = 'Destination Address'
     )
@@ -291,9 +291,9 @@ def add_createshipment_parser(subparsers, parent_parser):
     )    
 
 
-def add_updateShipment_parser(subparsers, parent_parser):
+def add_updateShipmentStatus_parser(subparsers, parent_parser):
     parser = subparsers.add_parser(
-        'updatehipment',
+        'updateShipmentStatus',
         help = 'Update a shipment with n boxes',
         parents = [parent_parser]
     )
@@ -519,7 +519,7 @@ def create_parser(prog_name):
     add_createBox_parser(subparsers, parent_parser)
     add_updateBox_parser(subparsers, parent_parser)
     add_createshipment_parser(subparsers, parent_parser)
-    add_updateShipment_parser(subparsers, parent_parser)
+    add_updateShipmentStatus_parser(subparsers, parent_parser)
     add_deleteShipment_parser(subparsers, parent_parser)
     add_list_parser(subparsers, parent_parser)
     add_show_parser(subparsers, parent_parser)    
@@ -600,8 +600,8 @@ def do_createShipment(args):
     for x in li:
         boxIDArray.append(int(x))
     
-    originAdd = args.originAdd
-    destinationAdd = args.destinationAdd
+    origin = args.origin
+    destination = args.destination
 
     url = _get_url(args)
     keyfile = _get_keyfile(args)
@@ -612,8 +612,8 @@ def do_createShipment(args):
     if args.wait and args.wait > 0:
         response = client.createShipment(
             boxIDArray,
-            originAdd,
-            destinationAdd,
+            origin,
+            destination,
             wait = args.wait,
             auth_user = auth_user,
             auth_password = auth_password            
@@ -621,8 +621,8 @@ def do_createShipment(args):
     else:
         response = client.createShipment(
             boxIDArray,
-            originAdd,
-            destinationAdd,
+            origin,
+            destination,
             auth_user = auth_user,
             auth_password = auth_password            
         )        
@@ -630,7 +630,7 @@ def do_createShipment(args):
     print("Response : {}".format(response))
 
 
-def do_updateShipment(args):
+def do_updateShipmentStatus(args):
     shipmentID = args.shipmentID
     shipmentStatus = args.shipmentStatus
 
@@ -641,7 +641,7 @@ def do_updateShipment(args):
     client = TransferClient(base_url = url, keyfile= keyfile)
 
     if args.wait and args.wait > 0:
-        response = client.updateShipment(
+        response = client.updateShipmentStatus(
             shipmentID,
             shipmentStatus,
             wait = args.wait,
@@ -649,7 +649,7 @@ def do_updateShipment(args):
             auth_password = auth_password             
         )
     else:
-        response = client.updateShipment(
+        response = client.updateShipmentStatus(
             shipmentID,
             shipmentStatus,
             auth_user = auth_user,
@@ -742,8 +742,8 @@ def main(prog_name = os.path.basename(sys.argv[0]), args = None):
     elif args.command == 'createShipment':
         do_createShipment(args)
         
-    elif args.command == 'updateShipment':
-        do_updateShipment(args)
+    elif args.command == 'updateShipmentStatus':
+        do_updateShipmentStatus(args)
 
     elif args.command == 'deleteShipment':
         do_deleteShipment(args)

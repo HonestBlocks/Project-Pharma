@@ -258,7 +258,7 @@ class TransferState:
     def _serializes(self , shipments):
         shipment_strs = []
         for shipmentID , m in shipments.items():
-            shipment_str = ",".join([shipmentID, m.logisticsID, str(m.boxIDArray), m.origin, m.destination, str(m.shipmentStatus)])
+            shipment_str = ",".join([shipmentID, str(m.logisticsID), str(m.boxIDArray), m.origin, m.destination, str(m.shipmentStatus)])
             shipment_strs.append(shipment_str)
         return "|".join(sorted(shipment_strs)).encode()
 

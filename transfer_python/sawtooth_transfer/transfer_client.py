@@ -95,16 +95,16 @@ class TransferClient:
                         )
     
     
-    def createShipment(self, boxIDArray, originAdd, destinationAdd, wait = None, auth_user = None, auth_password = None):
+    def createShipment(self, boxIDArray, origin, destination, wait = None, auth_user = None, auth_password = None):
         shipmentID = ''.join(random.sample('0123456789', 5))
         shipmentStatus = 'CREATED'
         return self._send_transfer_txn(
                         '',
                         '',
                         '',
-                        originAdd,
-                        destinationAdd,
-                        shipmentStatus,
+                        origin,
+                        destination,
+                        '',
                         self._signer.get_public_key().as_hex(),
                         shipmentID,
                         boxIDArray,
@@ -116,7 +116,7 @@ class TransferClient:
                         )
     
 
-    def updateShipment(self, shipmentID, shipmentStatus, wait = None, auth_user = None, auth_password = None):
+    def updateShipmentStatus(self, shipmentID, shipmentStatus, wait = None, auth_user = None, auth_password = None):
         return self._send_transfer_txn(
                         '',
                         '',
@@ -128,7 +128,7 @@ class TransferClient:
                         shipmentID,
                         '',
                         shipmentStatus,
-                        'updateShipment',
+                        'updateShipmentStatus',
                         wait,
                         auth_user,
                         auth_password
@@ -257,8 +257,8 @@ class TransferClient:
                         medicineName,
                         medicineID,
                         units,
-                        originAdd,
-                        destinationAdd,
+                        origin,
+                        destination,
                         boxID,
                         logisticsID,
                         shipmentID,
@@ -269,7 +269,10 @@ class TransferClient:
                         auth_user = None,
                         auth_password =None):
 
-        payload = ",".join([medicineName, str(medicineID), str(units), originAdd, destinationAdd, str(boxID), str(logisticsID), str(shipmentID), str(boxIDArray), shipmentStatus, action]).encode()
+        payload = ",".join([medicineName, str(medicineID), str(units), origin, destination, str(boxID), str(logisticsID), str(shipmentID), str(boxIDArray), shipmentStatus, action]).encode()
+
+        addresss = self._get_address(str(shipmentID))
+        addressb = self._get_address(str(boxID))
 
         if(boxID is None):
             address = self._get_address(str(shipmentID))
@@ -283,8 +286,8 @@ class TransferClient:
             signer_public_key=self._signer.get_public_key().as_hex(),
             family_name="transfer",
             family_version="1.0",
-            inputs=[address, med_address],
-            outputs=[address, med_address],
+            inputs=[addresss, addressb, address, med_address],
+            outputs=[addresss, addressb, address, med_address],
             dependencies=[],
             payload_sha512=_sha512(payload),
             batcher_public_key=self._signer.get_public_key().as_hex(),
