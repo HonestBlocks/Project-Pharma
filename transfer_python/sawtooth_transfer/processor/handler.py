@@ -100,8 +100,8 @@ class TransferHandler(TransactionHandler):
                     shipmentID = transfer_payload.shipmentID,
                     logisticsID = transfer_payload.logisticsID,
                     boxIDArray = transfer_payload.boxIDArray,
-                    originAdd = transfer_payload.origin,
-                    destinationAdd = transfer_payload.destinationAdd,
+                    origin = transfer_payload.origin,
+                    destination = transfer_payload.destination,
                     shipmentStatus = transfer_payload.shipmentStatus
             )
 
@@ -113,9 +113,12 @@ class TransferHandler(TransactionHandler):
         elif(transfer_payload.action == 'updateShipmentStatus'):
             shipment = transfer_state.get_shipment(transfer_payload.shipmentID)
 
+            if shipment is None:
+                raise InvalidTransaction('Invalid action : Shipment does not exists: {}'.format(transfer_payload.shipmentID))
+
             shipment.shipmentStatus = transfer_payload.shipmentStatus
             transfer_state.set_shipment(transfer_payload.shipmentID , shipment)
-            _display('Logistics Company : {} created Shipment'.format(signer[:6]))
+            _display('Logistics Company : {} updated Shipment'.format(signer[:6]))
 
 
 
@@ -125,7 +128,7 @@ class TransferHandler(TransactionHandler):
             if shipment is None:
                 raise InvalidTransaction('Invalid action : Shipment does not exists: {}'.format(transfer_payload.shipmentID))
             
-            if(signer == shipment.logisticsID) and (shipment.shipmentStatus == shipment.destinationAdd):
+            if(signer == shipment.logisticsID):
                 transfer_state.delete_shipment(transfer_payload.shipmentID)
                 _display('Shipment Deleted successfully deleted successfully by: {}'.format(signer[:6]))
             else:
